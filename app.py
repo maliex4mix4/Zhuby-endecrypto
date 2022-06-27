@@ -59,22 +59,26 @@ def decrypt_text(AES_instance, input_text):
 def dashboard(AES_instance):
     st.title("AES Data Security Demo")
     st.sidebar.title("Configurations")
-    task = st.sidebar.radio("Task Type",
-                            [
-                                "Encrypt",
-                                "Decrypt"])
+    task = st.sidebar.radio("Task Type",["Encrypt","Decrypt"])
     
     if task == "Encrypt":
         text_file = display(task)
         output_text = AES_instance.encrypt(text_file)
     elif task == "Decrypt":
         text_file = display(task)
-        output_text = AES_instance.decrypt(text_file)
+        if len(text_file) > 15:
+            output_text = AES_instance.decrypt(text_file)
+        else:
+            output_text = False
 
     if st.button("Run"):
-        st.write("**Output Text**")
-        st.write(output_text)
-        st.download_button("Download output text", output_text)
+        if output_text == False:
+            st.write("**Output Error**")
+            st.write("Please ensure you have an encrypted key with lenght greater than 15")
+        else:
+            st.write("**Output Text**")
+            st.write(output_text)
+            st.download_button("Download output text", output_text)
 
 
 def display(task):
@@ -87,7 +91,7 @@ def display(task):
         text_file = st.text_area(f"Enter the text you want to {task.lower()} here",
                                  uploaded_file)
     else:
-        text_file = st.text_area(f"Enter the text you want to {task.lower()} here")
+        text_file = st.text_area(f"Enter the text you want to {task.lower()} here", "Type here...")
     return text_file
 
     
